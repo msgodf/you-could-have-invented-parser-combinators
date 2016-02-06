@@ -27,3 +27,18 @@
 #_(let [input (atom (seq "abcd"))
         parser (lit \a)]
     (parser input))
+
+(defn p-or
+  [parser0 parser1]
+  (fn parser [input]
+    (let [result0 (parser0 input)]
+      (if (not= :failure result0)
+        result0
+        (let [result1 (parser1 input)]
+          (if (not= :failure result1)
+            result1
+            :failure))))))
+
+#_(let [input (atom (seq "abcd"))
+        parser (p-or (lit \a) (lit \b))]
+    (parser input))
