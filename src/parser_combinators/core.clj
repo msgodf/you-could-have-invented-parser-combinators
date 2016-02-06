@@ -14,10 +14,10 @@
 
 (defn input-advance
   [input n]
-  (swap! input
+  (alter input
          (fn [x] (update-in x
-                  [:position]
-                  (fn [v] (+ v n))))))
+                            [:position]
+                            (fn [v] (+ v n))))))
 
 (defn input-get
   [input]
@@ -25,10 +25,10 @@
 
 (defn input-set
   [input n]
-  (swap! input
+  (alter input
          (fn [x] (update-in x
-                  [:position]
-                  (fn [_] n)))))
+                            [:position]
+                            (fn [_] n)))))
 
 (defn lit
   [c]
@@ -45,16 +45,17 @@
 (defn p-or
   [parser0 parser1]
   (fn parser [input]
-    (let [result0 (parser0 input)]
-      (if (not= :failure result0)
-        result0
-        (let [result1 (parser1 input)]
-          (if (not= :failure result1)
-            result1
-            :failure))))))
+    (dosync
+     (let [result0 (parser0 input)]
+       (if (not= :failure result0)
+         result0
+         (let [result1 (parser1 input)]
+           (if (not= :failure result1)
+             result1
+             :failure)))))))
 
-#_(input-read (atom {:sequence (seq "abcd") :position 0}))
-#_(let [input (atom {:sequence (seq "abcd") :position 0})
+#_(input-read (ref {:sequence (seq "abcd") :position 0}))
+#_(let [input (ref {:sequence (seq "abcd") :position 0})
         parser (p-or (lit \a) (lit \b))]
     (parser input))
 
@@ -79,18 +80,19 @@
 (defn p-and
   [parser0 parser1]
   (fn parser [input]
-    (let [pos (input-get input)
-          result0 (parser0 input)]
-      (if (= :failure result0)
-        (do (input-set input pos)
-            :failure)
-        (let [result1 (parser1 input)]
-          (if (= :failure result1)
-            (do (input-set input pos)
-                :failure)
-            (str result0 result1)))))))
+    (dosync
+     (let [pos (input-get input)
+           result0 (parser0 input)]
+       (if (= :failure result0)
+         (do (input-set input pos)
+             :failure)
+         (let [result1 (parser1 input)]
+           (if (= :failure result1)
+             (do (input-set input pos)
+                 :failure)
+             (str result0 result1))))))))
 
-#_(let [input (atom {:sequence (seq "abcd") :position 0})
+#_(let [input (ref {:sequence (seq "abcd") :position 0})
         parser (p-and (lit \a) (lit \b))]
     (parser input))
 
