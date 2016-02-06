@@ -38,10 +38,6 @@
           c)
       :failure)))
 
-#_(let [input (atom (seq "abcd"))
-        parser (lit \a)]
-    (parser input))
-
 (defn p-or
   [parser0 parser1]
   (fn parser [input]
@@ -53,11 +49,6 @@
            (if (not= :failure result1)
              result1
              :failure)))))))
-
-#_(input-read (ref {:sequence (seq "abcd") :position 0}))
-#_(let [input (ref {:sequence (seq "abcd") :position 0})
-        parser (p-or (lit \a) (lit \b))]
-    (parser input))
 
 ;; Now to implement `and`
 
@@ -91,10 +82,6 @@
              (do (input-set input pos)
                  :failure)
              (str result0 result1))))))))
-
-#_(let [input (ref {:sequence (seq "abcd") :position 0})
-        parser (p-and (lit \a) (lit \b))]
-    (parser input))
 
 ;; At this point there was no real point in using the atom, because the input
 ;; position could have been changed between getting it and setting it.
