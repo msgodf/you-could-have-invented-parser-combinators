@@ -9,12 +9,26 @@
 
 (defn input-read
   [input]
-  (first @input))
+  (let [{position :position xs :sequence} @input]
+    (nth xs position)))
 
 (defn input-advance
   [input n]
   (swap! input
-         (partial drop n)))
+         (fn [x] (update-in x
+                  [:position]
+                  (fn [v] (+ v n))))))
+
+(defn input-get
+  [input]
+  (:position @input))
+
+(defn input-set
+  [input n]
+  (swap! input
+         (fn [x] (update-in x
+                  [:position]
+                  (fn [_] n)))))
 
 (defn lit
   [c]
@@ -39,6 +53,49 @@
             result1
             :failure))))))
 
-#_(let [input (atom (seq "abcd"))
+#_(input-read (atom {:sequence (seq "abcd") :position 0}))
+#_(let [input (atom {:sequence (seq "abcd") :position 0})
         parser (p-or (lit \a) (lit \b))]
     (parser input))
+
+;; Now to implement `and`
+
+;; This gets and sets the position in the input
+;; i.e. manipulates it, because it needs to advance and rewind
+
+;; this means that the input isn't (necessarily) mutable, but the position into
+;; it can change
+
+;; So instead of just a sequence, make `input` a map of a sequence and a position
+;; `input-read` gets the value at the current position.
+;; `input-advance` increments the current position by a given offset.
+;; `input-get` gets the current position, and `input-set` sets the current
+;; position.)
+
+;; {:sequence xs :position n}
+
+;; although that doesn't suit using an atom very well
+
+(defn p-and
+  [parser0 parser1]
+  (fn parser [input]
+    (let [pos (input-get input)
+          result0 (parser0 input)]
+      (if (= :failure result0)
+        (do (input-set input pos)
+            :failure)
+        (let [result1 (parser1 input)]
+          (if (= :failure result1)
+            (do (input-set input pos)
+                :failure)
+            (str result0 result1)))))))
+
+#_(let [input (atom {:sequence (seq "abcd") :position 0})
+        parser (p-and (lit \a) (lit \b))]
+    (parser input))
+
+;; At this point there was no real point in using the atom, because the input
+;; position could have been changed between getting it and setting it.
+
+;; I'd prefer not to use mutation at all - but I should use a ref instead of an
+;; atom
