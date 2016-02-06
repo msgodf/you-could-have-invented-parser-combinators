@@ -33,10 +33,11 @@
 (defn lit
   [c]
   (fn parser [input]
-    (if (= c (input-read input))
-      (do (input-advance input 1)
-          c)
-      :failure)))
+    (dosync
+     (if (= c (input-read input))
+       (do (input-advance input 1)
+           c)
+       :failure))))
 
 (defn p-or
   [parser0 parser1]
