@@ -47,3 +47,13 @@
              :result :failure}
             {:input input1
              :result [result0 result1]}))))))
+
+(defn p-apply
+  [f parser0]
+  (fn parser [input]
+    (let [{result :result input :input} (parser0 input)]
+      (if (= :failure result)
+        {:input input
+         :result :failure}
+        {:input input
+         :result (f result)}))))

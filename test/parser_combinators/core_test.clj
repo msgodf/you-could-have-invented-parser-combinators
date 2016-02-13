@@ -60,4 +60,16 @@
              (get-in (parser input) [:input :position]))
            0))))
 
+(deftest test-apply
+  (testing "Check for either ab or cd at the start of the input, and if either one is present convert the characters to integers and return a list of them"
+    (is (= (let [input {:sequence (seq "abcd")
+                        :position 0}
+                 parser (p-or (p-and (p-apply int (lit \a))
+                                     (p-apply int (lit \b)))
+                              (p-and (p-apply int (lit \c))
+                                     (p-apply int (lit \d))))]
+
+             (:result (parser input)))
+           [97 98]))))
+
 #_(run-tests)
