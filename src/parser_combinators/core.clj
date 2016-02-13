@@ -29,10 +29,7 @@
     (let [{result0 :result input :input} (parser0 input)]
       (if (not= :failure result0)
         {:input input :result result0}
-        (let [{result1 :result input :input} (parser1 input)]
-          (if (not= :failure result1)
-            {:input input :result result1}
-            {:input input :result :failure}))))))
+        (parser1 input)))))
 
 (defn p-and
   [parser0 parser1]
