@@ -30,12 +30,12 @@
            \a))))
 
 (deftest test-and-combinator
-  (testing "If both of them succeed it returns the string of both the characters joined together"
+  (testing "If both of them succeed it returns a vector of both characters"
     (is (= (let [input {:sequence (seq "abcd")
                         :position 0}
                  parser (p-and (lit \a) (lit \b))]
              (:result (parser input)))
-           "ab")))
+           [\a \b])))
   (testing "If both of them succeed it advances the input position forward by two"
     (is (= (let [input {:sequence (seq "abcd")
                         :position 0}

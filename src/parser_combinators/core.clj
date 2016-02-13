@@ -46,4 +46,4 @@
             {:input input
              :result :failure}
             {:input input1
-             :result (str result0 result1)}))))))
+             :result [result0 result1]}))))))
