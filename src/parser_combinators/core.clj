@@ -12,44 +12,41 @@
   (let [{position :position xs :sequence} input]
     (nth xs position)))
 
-(defn input-advance!
+(defn input-advance
   [input n]
-  (alter input
-         (fn [x] (update-in x
-                            [:position]
-                            (fn [v] (+ v n))))))
+  (update-in input
+             [:position]
+             (fn [v] (+ v n))))
 
 (defn input-get
   [input]
   (:position input))
 
-(defn input-set!
+(defn input-set
   [input n]
-  (alter input
-         (fn [x] (update-in x
-                            [:position]
-                            (fn [_] n)))))
+  (update-in input
+             [:position]
+             (fn [_] n)))
 
 (defn lit
   [c]
   (fn parser [input]
-    (dosync
-     (if (= c (input-read @input))
-       (do (input-advance! input 1)
-           c)
-       :failure))))
+    (if (= c (input-read input))
+      {:input (input-advance input 1)
+       :result c}
+      {:input input
+       :result :failure})))
 
 (defn p-or
   [parser0 parser1]
   (fn parser [input]
-    (dosync
-     (let [result0 (parser0 input)]
-       (if (not= :failure result0)
-         result0
-         (let [result1 (parser1 input)]
-           (if (not= :failure result1)
-             result1
-             :failure)))))))
+    (let [{result0 :result input :input} (parser0 input)]
+      (if (not= :failure result0)
+        {:input input :result result0}
+        (let [{result1 :result input :input} (parser1 input)]
+          (if (not= :failure result1)
+            {:input input :result result1}
+            {:input input :result :failure}))))))
 
 ;; Now to implement `and`
 
@@ -72,20 +69,27 @@
 (defn p-and
   [parser0 parser1]
   (fn parser [input]
-    (dosync
-     (let [pos (input-get @input)
-           result0 (parser0 input)]
-       (if (= :failure result0)
-         (do (input-set! input pos)
-             :failure)
-         (let [result1 (parser1 input)]
-           (if (= :failure result1)
-             (do (input-set input pos)
-                 :failure)
-             (str result0 result1))))))))
+    (let [pos (input-get input)
+          {result0 :result input :input} (parser0 input)]
+      (if (= :failure result0)
+        {:input (input-set input pos)
+         :result :failure}
+        (let [{result1 :result input :input} (parser1 input)]
+          (if (= :failure result1)
+            {:input (input-set input pos)
+             :result :failure}
+            {:input input
+             :result (str result0 result1)}))))))
 
 ;; At this point there was no real point in using the atom, because the input
 ;; position could have been changed between getting it and setting it.
 
 ;; I'd prefer not to use mutation at all - but I should use a ref instead of an
 ;; atom
+
+;; How to avoid mutation?
+
+;; Would have to take input and return the modified one - lit has backtracking, the parser it generates can return both a new input and a result
+
+;; parsers take an input map like {:position n :sequence xs} and return a map that's something like {{:input {:position n :sequence xs} :result x}
+;; perhaps it's a good idea if they also take the result? Let's try the first way for now.
