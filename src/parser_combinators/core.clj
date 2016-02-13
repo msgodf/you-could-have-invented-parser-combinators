@@ -9,7 +9,7 @@
 
 (defn input-read
   [input]
-  (let [{position :position xs :sequence} @input]
+  (let [{position :position xs :sequence} input]
     (nth xs position)))
 
 (defn input-advance
@@ -21,7 +21,7 @@
 
 (defn input-get
   [input]
-  (:position @input))
+  (:position input))
 
 (defn input-set
   [input n]
@@ -34,7 +34,7 @@
   [c]
   (fn parser [input]
     (dosync
-     (if (= c (input-read input))
+     (if (= c (input-read @input))
        (do (input-advance input 1)
            c)
        :failure))))
@@ -73,7 +73,7 @@
   [parser0 parser1]
   (fn parser [input]
     (dosync
-     (let [pos (input-get input)
+     (let [pos (input-get @input)
            result0 (parser0 input)]
        (if (= :failure result0)
          (do (input-set input pos)
