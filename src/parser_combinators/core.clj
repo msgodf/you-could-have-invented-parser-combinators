@@ -18,16 +18,6 @@
              [:position]
              (fn [v] (+ v n))))
 
-(defn input-get
-  [input]
-  (:position input))
-
-(defn input-set
-  [input n]
-  (update-in input
-             [:position]
-             (fn [_] n)))
-
 (defn lit
   [c]
   (fn parser [input]
@@ -69,16 +59,15 @@
 (defn p-and
   [parser0 parser1]
   (fn parser [input]
-    (let [pos (input-get input)
-          {result0 :result input :input} (parser0 input)]
+    (let [{result0 :result input0 :input} (parser0 input)]
       (if (= :failure result0)
-        {:input (input-set input pos)
+        {:input input
          :result :failure}
-        (let [{result1 :result input :input} (parser1 input)]
+        (let [{result1 :result input1 :input} (parser1 input0)]
           (if (= :failure result1)
-            {:input (input-set input pos)
-             :result :failure}
             {:input input
+             :result :failure}
+            {:input input1
              :result (str result0 result1)}))))))
 
 ;; At this point there was no real point in using the atom, because the input
