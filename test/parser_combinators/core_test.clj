@@ -36,6 +36,12 @@
                  parser (p-and (lit \a) (lit \b))]
              (:result (parser input)))
            [\a \b])))
+  (testing "If both of them succeed it returns a vector of both integers"
+    (is (= (let [input {:sequence [1 2 3 4]
+                        :position 0}
+                 parser (p-and (lit 1) (lit 2))]
+             (:result (parser input)))
+           [1 2])))
   (testing "If both of them succeed it advances the input position forward by two"
     (is (= (let [input {:sequence (seq "abcd")
                         :position 0}
