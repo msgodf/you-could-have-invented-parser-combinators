@@ -65,18 +65,18 @@
 
 (deftest test-folding-and
   (testing "An expression that matches the binary operator is calculated using a fold function"
-    (= (let [math-fold (fn [[x op y]] (let [x (Integer/parseInt (str x))
-                                            y (Integer/parseInt (str y))]
-                                        (case op
-                                          \* (* x y)
-                                          \/ (/ x y)
-                                          \+ (+ x y)
-                                          \- (- x y)
-                                          :failure)))]
-         (:result ((parsers/p-folding-and
-                    (parsers/lit \2) (parsers/p-oneof "*/+-") (parsers/lit \3))
-                   {:sequence (seq "2*3")
-                    :position 0})))
-       6)))
+    (is (= (let [math-fold (fn [[x op y]] (let [x (Integer/parseInt (str x))
+                                                y (Integer/parseInt (str y))]
+                                            (case op
+                                              \* (* x y)
+                                              \/ (/ x y)
+                                              \+ (+ x y)
+                                              \- (- x y)
+                                              :failure)))]
+             (:result ((parsers/p-folding-and math-fold
+                          (parsers/lit \2) (parsers/p-oneof "*/+-") (parsers/lit \3))
+                         {:sequence (seq "2*3")
+                          :position 0})))
+           6))))
 
 #_(run-tests)
