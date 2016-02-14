@@ -10,4 +10,17 @@
                (:result))
            \a))))
 
+(deftest test-p-oneof-parser
+  (testing "Matches any single given character in the string s"
+    (is (= (-> {:sequence (seq "abcd")
+                :position 0}
+               ((parsers/p-oneof "ab"))
+               (:result))
+           \a))
+    (is (= (-> {:sequence (seq "abcd")
+                :position 0}
+               ((parsers/p-oneof "ef"))
+               (:result))
+           :failure))))
+
 #_(run-tests)
