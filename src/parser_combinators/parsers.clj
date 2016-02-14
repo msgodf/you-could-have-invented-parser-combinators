@@ -2,6 +2,7 @@
   (:require [parser-combinators.input :as input]))
 
 (defn p-any
+  "Matches any individual character"
   []
   (fn [input]
     (let [v (input/input-read input)]
