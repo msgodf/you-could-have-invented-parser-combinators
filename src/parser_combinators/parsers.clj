@@ -48,3 +48,17 @@
              :result []}
             parsers)))
 
+(defn p-folding-and
+  "This takes a folding function and a variable number of parsers, and if
+   all of the parsers succeed in sequence on the input, then it calls the
+   'folding' function on the sequence of results."
+  [f & parsers]
+  {:pre [(fn? f)]}
+  (fn [input]
+    {:pre [(:sequence input) (:position input)]}
+    (let [{result :result input :input} ((apply p-and parsers) input)]
+      (if (= :failure result)
+        {:input input
+         :result :failure}
+        {:input input
+         :result (f result)}))))
