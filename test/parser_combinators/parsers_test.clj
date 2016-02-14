@@ -23,4 +23,44 @@
                (:result))
            :failure))))
 
+(deftest test-and-combinator
+  (testing "If both of them succeed it returns a vector of both characters"
+    (is (= (let [input {:sequence (seq "abcd")
+                        :position 0}
+                 parser (parsers/p-and (parsers/lit \a) (parsers/lit \b))]
+             (:result (parser input)))
+           [\a \b])))
+  (testing "If both of them succeed it returns a vector of both integers"
+    (is (= (let [input {:sequence [1 2 3 4]
+                        :position 0}
+                 parser (parsers/p-and (parsers/lit 1) (parsers/lit 2))]
+             (:result (parser input)))
+           [1 2])))
+  (testing "If all of them succeed it returns a vector of all characters"
+    (is (= (let [input {:sequence (seq "abcd")
+                        :position 0}
+                 parser (parsers/p-and (parsers/lit \a)
+                                       (parsers/lit \b)
+                                       (parsers/lit \c)
+                                       (parsers/lit \d))]
+             (:result (parser input)))
+           [\a \b \c \d])))
+  (testing "If both of them succeed it advances the input position forward by two"
+    (is (= (let [input {:sequence (seq "abcd")
+                        :position 0}
+                 parser (parsers/p-and (parsers/lit \a) (parsers/lit \b))]
+             (get-in (parser input) [:input :position]))
+           2)))
+  (testing "If any of them fail, it fails and rewinds the input."
+    (is (= (let [input {:sequence (seq "abcd")
+                        :position 0}
+                 parser (parsers/p-and (parsers/lit \b) (parsers/lit \a))]
+             (:result (parser input)))
+           :failure))
+    (is (= (let [input {:sequence (seq "abcd")
+                        :position 0}
+                 parser (parsers/p-and (parsers/lit \b) (parsers/lit \a))]
+             (get-in (parser input) [:input :position]))
+           0))))
+
 #_(run-tests)
