@@ -105,3 +105,18 @@
   (fn [input]
     ((p-and (p-soi) parser (p-eoi)) input)))
 
+(defn p-or
+  [& parsers]
+  (fn parser [input]
+    {:pre [(:sequence input) (:position input)]}
+    (reduce (fn [input parser]
+              (prn input)
+              (let [{result :result input0 :input} (parser (:input input))]
+                (if (not= :failure result)
+                  (reduced {:input input0
+                            :result result})
+                  {:input (:input input)
+                   :result :failure})))
+            {:input input}
+            parsers)))
+

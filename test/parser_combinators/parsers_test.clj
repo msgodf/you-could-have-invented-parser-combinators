@@ -164,4 +164,36 @@
                       :position 1}))
            :failure))))
 
+(deftest test-or-combinator
+  (testing "Takes a variable number of parsers, and returns the result of the first one that succeeds"
+    (is (= (let [input {:sequence (seq "abcd")
+                        :position 0}
+                 parser (parsers/p-or (parsers/lit \a) (parsers/lit \z))]
+             (:result (parser input)))
+           \a))
+    (is (= (let [input {:sequence (seq "abcd")
+                        :position 0}
+                 parser (parsers/p-or (parsers/lit \z) (parsers/lit \a))]
+             (:result (parser input)))
+           \a))
+    (is (= (let [input {:sequence (seq "abcd")
+                        :position 0}
+                 parser (parsers/p-or (parsers/lit \z)
+                                      (parsers/lit \a)
+                                      (parsers/lit \b))]
+             (:result (parser input)))
+           \a)))
+  (testing "Takes a variable number of parsers, if none of them succeed, then fails, and the input is unchanged"
+    (is (= (let [input {:sequence (seq "bcd")
+                        :position 0}
+                 parser (parsers/p-or (parsers/lit \a) (parsers/lit \z))]
+             (:result (parser input)))
+           :failure))
+    (is (= (let [input {:sequence (seq "bcd")
+                        :position 0}
+                 parser (parsers/p-or (parsers/lit \a) (parsers/lit \z))]
+             (get-in (parser input)
+                     [:input :position]))
+           0))))
+
 #_(run-tests)
