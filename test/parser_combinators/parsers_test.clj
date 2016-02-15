@@ -110,6 +110,58 @@
                      :position 0})
                    [:input :position])
            0))))
+
+(deftest test-many1
+  (testing "Runs a one or more times until it fails."
+    (is (= (:result ((parsers/p-many1 (parsers/lit \a))
+                     {:sequence "aaab"
+                      :position 0}))
+           [\a \a \a]))
+    (is (= (get-in ((parsers/p-many1 (parsers/lit \a))
+                    {:sequence "aaab"
+                     :position 0})
+                   [:input :position])
+           3)))
+  (testing "Runs a one or more times until it fails."
+    (is (= (:result ((parsers/p-many1 (parsers/lit \a))
+                     {:sequence "ab"
+                      :position 0}))
+           [\a]))
+    (is (= (get-in ((parsers/p-many1 (parsers/lit \a))
+                    {:sequence "ab"
+                     :position 0})
+                   [:input :position])
+           1)))
+  (testing "Runs a one or more times until it fails."
+    (is (= (:result ((parsers/p-many1 (parsers/lit \a))
+                     {:sequence "b"
+                      :position 0}))
+           :failure))
+    (is (= (get-in ((parsers/p-many1 (parsers/lit \a))
+                    {:sequence "b"
+                     :position 0})
+                   [:input :position])
+           0)))
+  (testing "Runs a one or more times until it fails."
+    (is (= (:result ((parsers/p-many1 (parsers/lit \a))
+                     {:sequence ""
+                      :position 0}))
+           :failure))
+    (is (= (get-in ((parsers/p-many1 (parsers/lit \a))
+                    {:sequence ""
+                     :position 0})
+                   [:input :position])
+           0)))
+  (testing "Runs a one or more times until it fails."
+    (is (= (:result ((parsers/p-many1 (parsers/p-oneof [\a]))
+                     {:sequence ""
+                      :position 0}))
+           :failure))
+    (is (= (get-in ((parsers/p-many1 (parsers/p-oneof [\a]))
+                    {:sequence ""
+                     :position 0})
+                   [:input :position])
+           0))))
 (deftest test-soi
   (testing "Succeed on the start of the input"
     (is (= (:result ((parsers/p-soi)
