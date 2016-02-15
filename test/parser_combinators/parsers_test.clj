@@ -110,4 +110,21 @@
                      :position 0})
                    [:input :position])
            0))))
+(deftest test-soi
+  (testing "Succeed on the start of the input"
+    (is (= (:result ((parsers/p-soi)
+                     {:sequence "abab"
+                      :position 0}))
+           nil)))
+  (testing "Fail when not at the start of the input"
+    (is (= (:result ((parsers/p-soi)
+                     {:sequnce "abab"
+                      :position 1}))
+           :failure)))
+  (testing "Fail when not at the start of the input, even for an empty input"
+    (is (= (:result ((parsers/p-soi)
+                     {:sequnce ""
+                      :position 1}))
+           :failure))))
+
 #_(run-tests)

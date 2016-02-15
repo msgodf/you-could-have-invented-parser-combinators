@@ -79,3 +79,13 @@
             {:input input
              :result []}
             (repeat parser))))
+(defn p-soi
+  "Parser that succeeds on the start of the input, and fails otherwise"
+  []
+  (fn [input]
+    (if (= 0 (:position input))
+      {:input input
+       :result nil}
+      {:input input
+       :result :failure})))
+
