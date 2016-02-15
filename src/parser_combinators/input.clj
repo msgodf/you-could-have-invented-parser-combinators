@@ -4,7 +4,8 @@
   [input]
   {:pre [(:position input) (:sequence input)]}
   (let [{position :position xs :sequence} input]
-    (nth xs position)))
+    (when (< position (count xs))
+      (nth xs position))))
 
 (defn input-advance
   [input n]
