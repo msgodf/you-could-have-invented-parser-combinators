@@ -25,12 +25,14 @@
   "Matches any single given character in the string s"
   [s]
   (fn [input]
-    (let [v (input/input-read input)]
+    (if-let [v (input/input-read input)]
       (if (some #{v} s)
         {:input (input/input-advance input 1)
          :result v}
         {:input input
-         :result :failure}))))
+         :result :failure})
+      {:input input
+       :result :failure})))
 
 (defn p-and
   "This takes a variable number of parsers, and succeeds if all of the parsers
