@@ -99,3 +99,9 @@
       {:input input
        :result :failure})))
 
+(defn p-whole
+  "Parser that suceeds when the supplied parser succeeds on the whole input."
+  [parser]
+  (fn [input]
+    ((p-and (p-soi) parser (p-eoi)) input)))
+

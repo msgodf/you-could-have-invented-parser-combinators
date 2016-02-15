@@ -144,4 +144,24 @@
                       :position 0}))
            nil))))
 
+(deftest test-whole
+  (testing "Succeed when the parser succeeds at the whole input"
+    (is (= (:result ((parsers/p-whole (parsers/p-and (parsers/lit \a)
+                                                     (parsers/lit \b)))
+                     {:sequence "ab"
+                      :position 0}))
+           [nil [\a \b] nil])))
+  (testing "Fail when the parser only succeeds at the start of the input"
+    (is (= (:result ((parsers/p-whole (parsers/p-and (parsers/lit \a)
+                                                     (parsers/lit \b)))
+                     {:sequence "abc"
+                      :position 0}))
+           :failure)))
+  (testing "Fail when the parser only succeeds at the end of the input"
+    (is (= (:result ((parsers/p-whole (parsers/p-and (parsers/lit \a)
+                                                     (parsers/lit \b)))
+                     {:sequence "abc"
+                      :position 1}))
+           :failure))))
+
 #_(run-tests)
