@@ -62,3 +62,20 @@
          :result :failure}
         {:input input
          :result (f result)}))))
+
+(defn p-many
+  "This takes a parser, and runs it zero or more times on the input, until it fails."
+  [parser]
+  (fn [input]
+    {:pre [(:sequence input) (:position input)]}
+    (reduce (fn [input parser]
+              (let [{result :result input0 :input} (parser (:input input))]
+                (if (= :failure result)
+                  (reduced {:input input0
+                            :result (:result input)})
+                  {:input input0
+                   :result (conj (or (:result input) [])
+                                 result)})))
+            {:input input
+             :result []}
+            (repeat parser))))

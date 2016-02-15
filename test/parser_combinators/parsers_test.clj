@@ -79,4 +79,35 @@
                           :position 0})))
            6))))
 
+(deftest test-many
+  (testing "Runs a zero or more times until it fails."
+    (is (= (:result ((parsers/p-many (parsers/lit \a))
+                     {:sequence "aaab"
+                      :position 0}))
+           [\a \a \a]))
+    (is (= (get-in ((parsers/p-many (parsers/lit \a))
+                    {:sequence "aaab"
+                     :position 0})
+                   [:input :position])
+           3)))
+  (testing "Runs a zero or more times until it fails."
+    (is (= (:result ((parsers/p-many (parsers/lit \a))
+                     {:sequence "b"
+                      :position 0}))
+           []))
+    (is (= (get-in ((parsers/p-many (parsers/lit \a))
+                    {:sequence "b"
+                     :position 0})
+                   [:input :position])
+           0)))
+  (testing "Runs a zero or more times until it fails."
+    (is (= (:result ((parsers/p-many (parsers/lit \a))
+                     {:sequence ""
+                      :position 0}))
+           []))
+    (is (= (get-in ((parsers/p-many (parsers/lit \a))
+                    {:sequence ""
+                     :position 0})
+                   [:input :position])
+           0))))
 #_(run-tests)
