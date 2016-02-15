@@ -89,3 +89,13 @@
       {:input input
        :result :failure})))
 
+(defn p-eoi
+  "Parser that succeeds on the end of the input, and fails otherwise"
+  []
+  (fn [input]
+    (if (= (:position input) (count (:sequence input)))
+      {:input input
+       :result nil}
+      {:input input
+       :result :failure})))
+

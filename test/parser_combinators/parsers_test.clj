@@ -127,4 +127,21 @@
                       :position 1}))
            :failure))))
 
+(deftest test-eoi
+  (testing "Succeed on the end of the input"
+    (is (= (:result ((parsers/p-eoi)
+                     {:sequence "abab"
+                      :position 4}))
+           nil)))
+  (testing "Fail when not at the end of the input"
+    (is (= (:result ((parsers/p-eoi)
+                     {:sequnce "abab"
+                      :position 3}))
+           :failure)))
+  (testing "Suceed at the start of an empty input"
+    (is (= (:result ((parsers/p-eoi)
+                     {:sequnce ""
+                      :position 0}))
+           nil))))
+
 #_(run-tests)
