@@ -248,4 +248,26 @@
                      [:input :position]))
            0))))
 
+(deftest test-int
+  (testing "Succeeds on multiple digits"
+    (is (= (:result ((parsers/p-int) {:sequence "123"
+                                      :position 0}))
+           [\1 \2 \3])))
+  (testing "Succeeds on a single digit"
+    (is (= (:result ((parsers/p-int) {:sequence "0"
+                                      :position 0}))
+           [\0])))
+  (testing "Succeeds on a single digit followed by a non-digit"
+    (is (= (:result ((parsers/p-int) {:sequence "0."
+                                      :position 0}))
+           [\0])))
+  (testing "Succeeds on multiple digits followed by a non-digit"
+    (is (= (:result ((parsers/p-int) {:sequence "123."
+                                      :position 0}))
+           [\1 \2 \3])))
+  (testing "Fails when no digits are present"
+    (is (= (:result ((parsers/p-int) {:sequence "abcd"
+                                      :position 0}))
+           :failure))))
+
 #_(run-tests)

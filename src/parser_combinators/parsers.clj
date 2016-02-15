@@ -100,6 +100,13 @@
                 {:input input0
                  :result [result]}
                 (repeat parser))))))
+(defn p-int
+  "Parser that succeeds when the input is one or more base 10 digits (0-9)."
+  []
+  (fn [input]
+    ((p-many1 (p-oneof [\0 \1 \2 \3 \4 \5 \6 \7 \8 \9]))
+     input)))
+
 (defn p-soi
   "Parser that succeeds on the start of the input, and fails otherwise"
   []
