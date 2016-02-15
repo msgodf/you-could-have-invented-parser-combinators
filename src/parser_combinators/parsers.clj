@@ -4,9 +4,12 @@
 (defn lit
   [c]
   (fn parser [input]
-    (if (= c (input/input-read input))
-      {:input (input/input-advance input 1)
-       :result c}
+    (if-let [v (input/input-read input)]
+      (if (= c v)
+        {:input (input/input-advance input 1)
+         :result c}
+        {:input input
+         :result :failure})
       {:input input
        :result :failure})))
 
