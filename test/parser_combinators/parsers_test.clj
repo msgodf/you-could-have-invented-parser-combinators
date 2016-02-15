@@ -270,4 +270,26 @@
                                       :position 0}))
            :failure))))
 
+(deftest test-parens
+  (testing "Succeeds on a parenthesised input"
+    (is (= (:result ((parsers/p-parens (parsers/lit \a))
+                     {:sequence "(a)"
+                      :position 0}))
+           [\a])))
+  (testing "Succeeds on a nested parenthesised input"
+    (is (= (:result ((parsers/p-parens (parsers/p-parens (parsers/lit \a)))
+                     {:sequence "((a))"
+                      :position 0}))
+           [[\a]])))
+  (testing "Fails when input doesn't start with an opening parenthesis"
+    (is (= (:result ((parsers/p-parens (parsers/lit \a))
+                     {:sequence "a)"
+                      :position 0}))
+           :failure)))
+  (testing "Fails when input doesn't end with a closing parenthesis"
+    (is (= (:result ((parsers/p-parens (parsers/lit \a))
+                     {:sequence "(a"
+                      :position 0}))
+           :failure))))
+
 #_(run-tests)

@@ -112,6 +112,19 @@
     ((p-many1 (p-oneof [\0 \1 \2 \3 \4 \5 \6 \7 \8 \9]))
      input)))
 
+(defn p-parens
+  "This succeeds when the input contains an opening parenthesis, followed
+   by an input on which the supplied parser succeeds, followed by a closing
+   parenthesis."
+  [parser]
+  (fn [input]
+    (let [{result :result input0 :input} ((p-and (lit \() parser (lit \))) input)]
+      (if (= :failure result)
+        {:input input
+         :result :failure}
+        {:input input0
+         :result [(:result (parser (:input ((lit \() input))))]}))))
+
 (defn p-soi
   "Parser that succeeds on the start of the input, and fails otherwise"
   []
