@@ -105,6 +105,24 @@
                 {:input input0
                  :result [result]}
                 (repeat parser))))))
+
+(defn p-count
+  "This takes a parser, and succeeds if it succeeds n times on the input."
+  [n parser]
+  (fn [input]
+    {:pre [(:sequence input) (:position input)]}
+    (reduce (fn [input parser]
+              (let [{result :result input0 :input} (parser (:input input))]
+                (if (= :failure result)
+                  (reduced {:input input0
+                            :result :failure})
+                  {:input input0
+                   :result (conj (or (:result input) [])
+                                 result)})))
+            {:input input
+             :result []}
+            (repeat n parser))))
+
 (defn p-int
   "Parser that succeeds when the input is one or more base 10 digits (0-9)."
   []

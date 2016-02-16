@@ -292,4 +292,30 @@
                       :position 0}))
            :failure))))
 
+(deftest test-count-combinator
+  (testing "If the parser succeeds n times, it returns a sequence of n results"
+    (is (= (let [input {:sequence (seq "aaab")
+                        :position 0}
+                 parser (parsers/p-count 3 (parsers/lit \a))]
+             (:result (parser input)))
+           [\a \a \a])))
+  (testing "If the count is zero, then it succeeds with an empty sequence of results"
+    (is (= (let [input {:sequence (seq "b")
+                        :position 0}
+                 parser (parsers/p-count 0  (parsers/lit \a))]
+             (:result (parser input)))
+           [])))
+  (testing "If the parser succeeds, but too few times, then it fails"
+    (is (= (let [input {:sequence (seq "aab")
+                        :position 0}
+                 parser (parsers/p-count 3 (parsers/lit \a))]
+             (:result (parser input)))
+           :failure)))
+  (testing "If the input is empty, then it fails"
+    (is (= (let [input {:sequence ""
+                        :position 0}
+                 parser (parsers/p-count 1 (parsers/lit \a))]
+             (:result (parser input)))
+           :failure))))
+
 #_(run-tests)
