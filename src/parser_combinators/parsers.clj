@@ -34,6 +34,13 @@
       {:input input
        :result :failure})))
 
+(defn p-whitespace
+  "Matches any whitespace character"
+  []
+  (fn [input]
+    ((p-oneof [\space \tab \newline \formfeed \return \u000B])
+     input)))
+
 (defn p-and
   "This takes a variable number of parsers, and succeeds if all of the parsers
    succeed, specifically each successive parser succeeds on each successive

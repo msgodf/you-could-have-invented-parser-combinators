@@ -318,4 +318,35 @@
              (:result (parser input)))
            :failure))))
 
+(deftest test-whitespace
+  (testing "Succeeds on a space"
+    (is (= (:result ((parsers/p-whitespace)
+                     {:sequence (seq " ")
+                      :position 0}))
+           \space)))
+  (testing "Succeeds on a newline"
+    (is (= (:result ((parsers/p-whitespace)
+                     {:sequence (seq "\n")
+                      :position 0}))
+           \newline)))
+  (testing "Succeeds on a return"
+    (is (= (:result ((parsers/p-whitespace)
+                     {:sequence (seq "\r")
+                      :position 0}))
+           \return)))
+  (testing "Succeeds on a tab"
+    (is (= (:result ((parsers/p-whitespace)
+                     {:sequence (seq "t")
+                      :position 0}))
+           \tab)))
+  (testing "Succeeds on a vertical tab (0x0B)"
+    (is (= (:result ((parsers/p-whitespace)
+                     {:sequence [\u000B]
+                      :position 0}))
+           \u000B)))
+  (testing "Succeeds on a formfeed"
+    (is (= (:result ((parsers/p-whitespace)
+                     {:sequence (seq "\f")
+                      :position 0}))
+           \formfeed))))
 #_(run-tests)
