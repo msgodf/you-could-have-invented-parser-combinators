@@ -203,3 +203,10 @@
   (fn [input]
     ((p-folding-and first parser (p-whitespaces))
      input)))
+
+(defn p-string
+  "Matches the string s exactly"
+  [s]
+  (fn [input]
+    ((apply p-and (map lit s))
+     input)))

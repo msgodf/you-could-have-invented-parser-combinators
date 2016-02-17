@@ -371,4 +371,20 @@
                       :position 0}))
            [\a \b \c]))))
 
+(deftest test-string
+  (testing "Succeeds when the string matches exactly"
+    (is (= (:result ((parsers/p-string "abc")
+                     {:sequence "abc"
+                      :position 0}))
+           [\a \b \c])))
+  (testing "Succeeds when the string matches the beginning of the input exactly"
+    (is (= (:result ((parsers/p-string "abc")
+                     {:sequence "abcd"
+                      :position 0}))
+           [\a \b \c])))
+  (testing "Fails when the string doesn't match"
+    (is (= (:result ((parsers/p-string "abc")
+                     {:sequence "abdef"
+                      :position 0}))
+           :failure))))
 #_(run-tests)
