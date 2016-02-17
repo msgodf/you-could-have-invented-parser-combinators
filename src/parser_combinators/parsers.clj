@@ -190,3 +190,9 @@
     ((p-oneof [\space \tab \newline \formfeed \return \u000B])
      input)))
 
+(defn p-whitespaces
+  "Matches zero or more whitespaces"
+  []
+  (fn [input]
+    ((p-many (p-whitespace))
+     input)))

@@ -349,4 +349,17 @@
                      {:sequence (seq "\f")
                       :position 0}))
            \formfeed))))
+
+(deftest test-whitespaces
+  (testing "Succeeds on a mixture of whitespace characters"
+    (is (= (:result ((parsers/p-whitespaces)
+                     {:sequence (seq "\n\r \t\f \u000B")
+                      :position 0}))
+           [\newline \return \space \tab \formfeed \space \u000B])))
+  (testing "Succeeds on a mixture of whitespace characters followed by a non-whitespace character"
+    (is (= (:result ((parsers/p-whitespaces)
+                     {:sequence (seq "\n\r \t\f \u000B!")
+                      :position 0}))
+           [\newline \return \space \tab \formfeed \space \u000B]))))
+
 #_(run-tests)
