@@ -362,4 +362,13 @@
                       :position 0}))
            [\newline \return \space \tab \formfeed \space \u000B]))))
 
+(deftest test-tok
+  (testing "Succeeds on a parser followed by a mixture of whitespace characters, and the result only contains the token"
+    (is (= (:result ((parsers/p-tok (parsers/p-and (parsers/lit \a)
+                                                   (parsers/lit \b)
+                                                   (parsers/lit \c)))
+                     {:sequence (seq "abc\n\r \t\f \u000B")
+                      :position 0}))
+           [\a \b \c]))))
+
 #_(run-tests)

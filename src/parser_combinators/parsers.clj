@@ -196,3 +196,10 @@
   (fn [input]
     ((p-many (p-whitespace))
      input)))
+
+(defn p-tok
+  "Matches the supplied parser and consumes any trailing whitespace"
+  [parser]
+  (fn [input]
+    ((p-folding-and first parser (p-whitespaces))
+     input)))
