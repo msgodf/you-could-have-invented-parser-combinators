@@ -336,7 +336,7 @@
            \return)))
   (testing "Succeeds on a tab"
     (is (= (:result ((parsers/p-whitespace)
-                     {:sequence (seq "t")
+                     {:sequence (seq "\t")
                       :position 0}))
            \tab)))
   (testing "Succeeds on a vertical tab (0x0B)"
