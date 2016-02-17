@@ -210,3 +210,10 @@
   (fn [input]
     ((apply p-and (map lit s))
      input)))
+
+(defn p-sym
+  "Matches the string exactly and consumes any trailing whitespace"
+  [s]
+  (fn [input]
+    ((p-tok (p-string s))
+     input)))

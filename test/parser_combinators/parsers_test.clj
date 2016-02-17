@@ -387,4 +387,32 @@
                      {:sequence "abdef"
                       :position 0}))
            :failure))))
+
+(deftest test-sym
+  (testing "Succeeds when the string matches exactly"
+    (is (= (:result ((parsers/p-sym "abc")
+                     {:sequence "abc"
+                      :position 0}))
+           [\a \b \c])))
+  (testing "Succeeds when the string matches the beginning of the input exactly, and there is trailing whitespace, and the result only contains the string."
+    (is (= (:result ((parsers/p-sym "abc")
+                     {:sequence "abc \t \n"
+                      :position 0}))
+           [\a \b \c])))
+  (testing "Succeeds when the string matches the beginning of the input exactly, and there is trailing whitespace then more non-whitespace, and the result only contains the string."
+    (is (= (:result ((parsers/p-sym "abc")
+                     {:sequence "abc \t \ndef"
+                      :position 0}))
+           [\a \b \c])))
+  (testing "Fails when the string doesn't match"
+    (is (= (:result ((parsers/p-sym "abc")
+                     {:sequence "abd"
+                      :position 0}))
+           :failure)))
+  (testing "Fails when the string doesn't match, and there is trailing whitespace"
+    (is (= (:result ((parsers/p-sym "abc")
+                     {:sequence "abd  \ndef"
+                      :position 0}))
+           :failure))))
+
 #_(run-tests)
