@@ -170,12 +170,12 @@
            nil)))
   (testing "Fail when not at the start of the input"
     (is (= (:result ((parsers/p-soi)
-                     {:sequnce "abab"
+                     {:sequence "abab"
                       :position 1}))
            :failure)))
   (testing "Fail when not at the start of the input, even for an empty input"
     (is (= (:result ((parsers/p-soi)
-                     {:sequnce ""
+                     {:sequence ""
                       :position 1}))
            :failure))))
 
