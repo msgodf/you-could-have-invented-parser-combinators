@@ -448,4 +448,14 @@
                     :result)
                 :failure)))))
 
+(deftest test-boundary-anchor-function
+  (testing "Boundary anchor function returns true when one input is nil"
+    (is (parsers/f-boundary-anchor nil \a))
+    (is (parsers/f-boundary-anchor \a nil)))
+  (testing "Boundary anchor function returns true when one input is non-word character"
+    (is (parsers/f-boundary-anchor \a \space))
+    (is (parsers/f-boundary-anchor \space \a)))
+  (testing "Boundary anchor function returns false when both inputs are word characters"
+    (is (not (parsers/f-boundary-anchor \a \b)))))
+
 #_(run-tests)

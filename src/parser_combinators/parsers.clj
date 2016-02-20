@@ -263,3 +263,15 @@
        :result nil}
       {:input input
        :result :failure})))
+
+(defn f-boundary-anchor
+  "An anchor function that returns true when the previous character and next
+  character are either side of a word boundary."
+  [prev-char next-char]
+  (let [word-chars "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_"
+        prev-in-word (some #{prev-char} word-chars)
+        next-in-word (some #{next-char} word-chars)]
+    (or (and next-in-word (nil? prev-char))
+        (and prev-in-word (nil? next-char))
+        (and next-in-word (not prev-in-word))
+        (and prev-in-word (not next-in-word)))))
