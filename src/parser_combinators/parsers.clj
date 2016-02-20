@@ -243,3 +243,23 @@
                       (range (int s)
                              (inc (int e))))))
      input)))
+
+(defn p-anchor
+  "Consumes no input. Successful when function f returns true. Always returns a
+  result of `nil`
+
+  Function f is a anchor function. It takes as input the last character parsed,
+  and the next character in the input, and returns success or failure. This
+  function can be set by the user to ensure some condition is met. For example
+  to test that the input is at a boundary between words and non-words.
+
+  At the start of the input the first argument is set to nil, and at the end of
+  the input the second argument is set to nil."
+  [f]
+  (fn [input]
+    (if (f (input/input-read (update-in input [:position] dec))
+           (input/input-read input))
+      {:input input
+       :result nil}
+      {:input input
+       :result :failure})))

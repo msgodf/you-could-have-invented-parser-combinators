@@ -409,4 +409,43 @@
                      (input/input "d")))
            :failure))))
 
+(deftest test-anchor
+  (testing "Consumes no input when anchor function returns true"
+    (is (zero? (-> (input/input "abc")
+                   ((parsers/p-anchor (constantly true)))
+                   :input
+                   :position))))
+  (testing "Consumes no input when anchor function returns false"
+    (is (zero? (-> (input/input "abc")
+                   ((parsers/p-anchor (constantly false)))
+                   :input
+                   :position))))
+  (testing "Succeeds with result of `nil` when anchor function returns true"
+    (is (nil? (-> (input/input "abc")
+                  ((parsers/p-anchor (constantly true)))
+                  :result))))
+  (testing "Fails when anchor function returns false"
+    (is (= (-> (input/input "abc")
+               ((parsers/p-anchor (constantly false)))
+               :result)
+           :failure)))
+  (testing "Calls the anchor function with a first argument of `nil` when at the start of the input"
+    (is (and (= (-> (input/input "abc")
+                    ((parsers/p-anchor (constantly false)))
+                    :result)
+                :failure)
+             (= (-> (input/input "abc")
+                    ((parsers/p-anchor (fn [a b] (not (nil? a)))))
+                    :result)
+                :failure))))
+  (testing "Calls the anchor function with a second argument of `nil` when at the end of the input"
+    (is (and (= (-> (input/input "abc")
+                    ((parsers/p-anchor (constantly false)))
+                    :result)
+                :failure)
+             (= (-> {:sequence "abc" :position 3}
+                    ((parsers/p-anchor (fn [a b] (not (nil? b)))))
+                    :result)
+                :failure)))))
+
 #_(run-tests)
