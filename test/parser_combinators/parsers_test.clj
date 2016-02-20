@@ -415,4 +415,36 @@
                       :position 0}))
            :failure))))
 
+(deftest test-between
+  (testing "Succeeds when opening and closing strings are empty"
+    (is (= (:result ((parsers/p-between (parsers/lit \a) "" "")
+                     {:sequence "a"
+                      :position 0}))
+           [\a])))
+  (testing "Succeeds when opening and closing strings are single characters"
+    (is (= (:result ((parsers/p-between (parsers/lit \a) "o" "c")
+                     {:sequence "oac"
+                      :position 0}))
+           [\a])))
+  (testing "Succeeds when opening and closing strings are multiple characters"
+    (is (= (:result ((parsers/p-between (parsers/lit \a) "open" "close")
+                     {:sequence "openaclose"
+                      :position 0}))
+           [\a])))
+  (testing "Succeeds on a nested input"
+    (is (= (:result ((parsers/p-between (parsers/p-between (parsers/lit \a) "[" "]") "<" ">")
+                     {:sequence "<[a]>"
+                      :position 0}))
+           [[\a]])))
+  (testing "Fails when input doesn't start with the opening string"
+    (is (= (:result ((parsers/p-between (parsers/lit \a) "o" "c")
+                     {:sequence "ac"
+                      :position 0}))
+           :failure)))
+  (testing "Fails when input doesn't end with the closing string"
+    (is (= (:result ((parsers/p-between (parsers/lit \a) "o" "c")
+                     {:sequence "oa"
+                      :position 0}))
+           :failure))))
+
 #_(run-tests)

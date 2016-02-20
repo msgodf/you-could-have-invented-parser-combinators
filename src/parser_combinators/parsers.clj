@@ -217,3 +217,18 @@
   (fn [input]
     ((p-tok (p-string s))
      input)))
+
+(defn p-between
+  "This succeeds when the input contains the opening string, followed by an
+   input on which the supplied parser succeeds, followed by the closing string."
+  [parser opening closing]
+  (fn [input]
+    (let [{result :result input0 :input} ((p-and (p-string opening)
+                                                 parser
+                                                 (p-string closing))
+                                          input)]
+      (if (= :failure result)
+        {:input input
+         :result :failure}
+        {:input input0
+         :result [(:result (parser (:input ((p-string opening) input))))]}))))
