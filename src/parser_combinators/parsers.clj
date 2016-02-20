@@ -232,3 +232,14 @@
          :result :failure}
         {:input input0
          :result [(:result (parser (:input ((p-string opening) input))))]}))))
+
+(defn p-range
+  "Matches any single given character in the range s to e (inclusive)"
+  [s e]
+  (fn [input]
+    ((apply p-or
+            (map lit
+                 (map char
+                      (range (int s)
+                             (inc (int e))))))
+     input)))

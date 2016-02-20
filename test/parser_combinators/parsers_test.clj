@@ -447,4 +447,41 @@
                       :position 0}))
            :failure))))
 
+(deftest test-range
+  (testing "Succeeds when the range has the same start and end character"
+    (is (= (:result ((parsers/p-range \a \a)
+                     {:sequence "a"
+                      :position 0}))
+           \a)))
+  (testing "Succeeds when the range has a start and end character with no characters between"
+    (is (= (:result ((parsers/p-range \a \b)
+                     {:sequence "a"
+                      :position 0}))
+           \a)))
+  (testing "Succeeds when the range has a start and end character with a single character between"
+    (is (= (:result ((parsers/p-range \a \c)
+                     {:sequence "a"
+                      :position 0}))
+           \a)))
+  (testing "Succeeds when the middle of the range is matched"
+    (is (= (:result ((parsers/p-range \a \c)
+                     {:sequence "b"
+                      :position 0}))
+           \b)))
+  (testing "Succeeds when the end of the range is matched"
+    (is (= (:result ((parsers/p-range \a \c)
+                     {:sequence "c"
+                      :position 0}))
+           \c)))
+  (testing "Fails on an input character before the start of the range"
+    (is (= (:result ((parsers/p-range \b \c)
+                     {:sequence "a"
+                      :position 0}))
+           :failure)))
+  (testing "Fails on an input character after the end of the range"
+    (is (= (:result ((parsers/p-range \b \c)
+                     {:sequence "d"
+                      :position 0}))
+           :failure))))
+
 #_(run-tests)
