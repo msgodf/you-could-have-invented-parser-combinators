@@ -143,31 +143,7 @@
         {:input input0
          :result [(:result (parser (:input ((lit \() input))))]}))))
 
-(defn p-soi
-  "Parser that succeeds on the start of the input, and fails otherwise"
-  []
-  (fn [input]
-    (if (= 0 (:position input))
-      {:input input
-       :result nil}
-      {:input input
-       :result :failure})))
 
-(defn p-eoi
-  "Parser that succeeds on the end of the input, and fails otherwise"
-  []
-  (fn [input]
-    (if (= (:position input) (count (:sequence input)))
-      {:input input
-       :result nil}
-      {:input input
-       :result :failure})))
-
-(defn p-whole
-  "Parser that suceeds when the supplied parser succeeds on the whole input."
-  [parser]
-  (fn [input]
-    ((p-and (p-soi) parser (p-eoi)) input)))
 
 (defn p-or
   [& parsers]
