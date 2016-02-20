@@ -10,7 +10,8 @@
   [input]
   {:pre [(:position input) (:sequence input)]}
   (let [{position :position xs :sequence} input]
-    (when (< position (count xs))
+    (when (and (>= position 0)
+               (< position (count xs)))
       (nth xs position))))
 
 (defn input-advance
