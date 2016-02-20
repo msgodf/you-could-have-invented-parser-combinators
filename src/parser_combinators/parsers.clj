@@ -275,3 +275,10 @@
         (and prev-in-word (nil? next-char))
         (and next-in-word (not prev-in-word))
         (and prev-in-word (not next-in-word)))))
+
+(defn p-boundary
+  "Matches only the boundary between words, and returns a result of `nil`"
+  []
+  (fn [input]
+    ((p-anchor f-boundary-anchor)
+     input)))

@@ -458,4 +458,24 @@
   (testing "Boundary anchor function returns false when both inputs are word characters"
     (is (not (parsers/f-boundary-anchor \a \b)))))
 
+
+(deftest test-boundary
+  (testing "Succeeds on word boundary, with a result of `nil`"
+    (is (nil? (:result ((parsers/p-boundary)
+                        {:sequence "ab cd"
+                         :position 2})))))
+  (testing "Succeeds on start of input, with a result of `nil`"
+    (is (nil? (:result ((parsers/p-boundary)
+                        {:sequence "ab"
+                         :position 0})))))
+  (testing "Succeeds on end of input, with a result of `nil`"
+    (is (nil? (:result ((parsers/p-boundary)
+                        {:sequence "ab"
+                         :position 2})))))
+  (testing "Fails on non boundary"
+    (is (= (:result ((parsers/p-boundary)
+                     {:sequence "ab"
+                      :position 1}))
+           :failure))))
+
 #_(run-tests)
