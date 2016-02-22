@@ -157,12 +157,12 @@
            nil)))
   (testing "Fail when not at the end of the input"
     (is (= (:result ((parsers/p-eoi)
-                     {:sequnce "abab"
+                     {:sequence "abab"
                       :position 3}))
            :failure)))
   (testing "Suceed at the start of an empty input"
     (is (= (:result ((parsers/p-eoi)
-                     {:sequnce ""
+                     {:sequence ""
                       :position 0}))
            nil))))
 
