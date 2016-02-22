@@ -147,11 +147,6 @@
     (is (= (:result ((parsers/p-soi)
                      {:sequence "abab"
                       :position 1}))
-           :failure)))
-  (testing "Fail when not at the start of the input, even for an empty input"
-    (is (= (:result ((parsers/p-soi)
-                     {:sequence ""
-                      :position 1}))
            :failure))))
 
 (deftest test-eoi

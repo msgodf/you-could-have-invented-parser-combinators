@@ -258,3 +258,23 @@
   (fn [input]
     ((p-anchor f-boundary-anchor)
      input)))
+
+(defn p-soi
+  "Parser that succeeds on the start of the input, and fails otherwise"
+  []
+  (fn [input]
+    ((p-anchor (fn [prev-char _] (nil? prev-char)))
+     input)))
+
+(defn p-eoi
+  "Parser that succeeds on the end of the input, and fails otherwise"
+  []
+  (fn [input]
+    ((p-anchor (fn [_ next-char] (nil? next-char)))
+     input)))
+
+(defn p-whole
+  "Parser that suceeds when the supplied parser succeeds on the whole input."
+  [parser]
+  (fn [input]
+    ((p-and (p-soi) parser (p-eoi)) input)))
