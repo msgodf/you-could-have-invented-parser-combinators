@@ -473,4 +473,36 @@
                       :position 1}))
            :failure))))
 
+(deftest test-startswith
+  (testing "Matches an empty string"
+    (is (= (:result ((parsers/p-startswith (parsers/p-eoi))
+                     (input/input "")))
+           [nil nil])))
+  (testing "Matches a single character at the start"
+    (is (= (:result ((parsers/p-startswith (parsers/lit \a))
+                     (input/input "a")))
+           [nil \a])))
+  (testing "Matches a single character at the start, followed by more input"
+    (is (= (:result ((parsers/p-startswith (parsers/lit \a))
+                     (input/input "ab")))
+           [nil \a])))
+  (testing "Fails when the parser doesn't match the start of the input"
+    (is (= (:result ((parsers/p-startswith (parsers/lit \a))
+                     (input/input "b")))
+           :failure))))
+
+(deftest test-endswith
+  (testing "Matches an empty string"
+    (is (= (:result ((parsers/p-endswith (parsers/p-soi))
+                     (input/input "")))
+           [nil nil])))
+  (testing "Matches a single character at the end"
+    (is (= (:result ((parsers/p-endswith (parsers/lit \a))
+                     (input/input "a")))
+           [\a nil])))
+  (testing "Fails when the parser doesn't match the end of the input"
+    (is (= (:result ((parsers/p-endswith (parsers/lit \a))
+                     (input/input "ab")))
+           :failure))))
+
 #_(run-tests)

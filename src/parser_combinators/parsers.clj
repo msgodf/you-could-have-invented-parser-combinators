@@ -278,3 +278,19 @@
   [parser]
   (fn [input]
     ((p-and (p-soi) parser (p-eoi)) input)))
+
+(defn p-startswith
+  "Matches the start of input followed by something on which the supplied parser succeeds"
+  [parser]
+  (fn [input]
+    ((p-and (p-soi)
+            parser)
+     input)))
+
+(defn p-endswith
+  "Matches something on which the supplied parser succeeds followed by the end of input"
+  [parser]
+  (fn [input]
+    ((p-and parser
+            (p-eoi))
+     input)))
