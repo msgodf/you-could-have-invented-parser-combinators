@@ -505,4 +505,13 @@
                      (input/input "ab")))
            :failure))))
 
+(deftest test-maybe
+  (testing "Succeeds when the parser succeeds"
+    (is (= (:result ((parsers/p-maybe (parsers/lit \a))
+                     (input/input "a")))
+           \a)))
+  (testing "Succeeds when the parser fails, with a result of nil"
+    (is (nil? (:result ((parsers/p-maybe (parsers/lit \a))
+                        (input/input "b")))))))
+
 #_(run-tests)

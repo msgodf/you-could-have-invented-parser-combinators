@@ -294,3 +294,16 @@
     ((p-and parser
             (p-eoi))
      input)))
+
+(defn p-maybe
+  "Returns a parser that runs the supplied parse. If that parser is successful
+  then it returns the result. If the supplied parser is unsuccessful then it
+  succeeds, but returns a result of nil."
+  [parser]
+  (fn [input]
+    (let [{result :result input0 :input} (parser input)]
+      (if (= :failure result)
+        {:input input
+         :result nil}
+        {:input input0
+         :result result}))))
